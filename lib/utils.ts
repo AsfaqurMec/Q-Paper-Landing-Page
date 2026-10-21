@@ -11,5 +11,5 @@ export function formatBnNumber(num: number | string | undefined): string {
   return String(num).replace(/[0-9]/g, (w) => bnDigits[+w]);
 }
 
-export const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-export const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5001";
+export const APP_URL = process.env.APP_URL || "http://localhost:3000";
+export const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:5001";

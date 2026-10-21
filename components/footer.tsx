@@ -83,7 +83,7 @@ export function Footer() {
                   href={`${APP_URL}/checkout?plan=small`}
                   className="py-1 text-emerald-400 font-semibold hover:underline inline-flex items-center gap-1.5"
                 >
-                  <span>Small প্ল্যান (৳২৫০)</span>
+                  <span>Small প্ল্যান (৳১০০)</span>
                   <span className="text-[10px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded">
                     নতুন
                   </span>
@@ -97,6 +97,17 @@ export function Footer() {
               <li>
                 <a href={`${APP_URL}/checkout?plan=ultra`} className="py-1 inline-block hover:text-emerald-400 transition">
                   Ultra প্ল্যান (৳১,০০০)
+                </a>
+              </li>
+              <li>
+                <a
+                  href={`${APP_URL}/checkout?plan=diamond`}
+                  className="py-1 text-cyan-400 font-semibold hover:underline inline-flex items-center gap-1.5"
+                >
+                  <span>Diamond প্ল্যান (৳৩,৫০০)</span>
+                  <span className="text-[10px] bg-cyan-500/20 text-cyan-300 px-1.5 py-0.5 rounded">
+                    আনলিমিটেড
+                  </span>
                 </a>
               </li>
             </ul>

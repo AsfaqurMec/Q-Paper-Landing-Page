@@ -88,6 +88,22 @@ export function PackagesSection({ plans = [] }: PackagesSectionProps) {
       randomGenerator: true,
       multipleVersions: true,
       importQuestion: true
+    },
+    {
+      code: "diamond",
+      name: "Diamond",
+      price: 3500,
+      interval: "month",
+      paperLimit: 999999,
+      questionLimit: 999999,
+      totalQuestionsLimit: 999999,
+      exports: ["pdf", "docx"],
+      watermark: false,
+      questionBank: true,
+      branding: true,
+      randomGenerator: true,
+      multipleVersions: true,
+      importQuestion: true
     }
   ];
 
@@ -107,7 +123,7 @@ export function PackagesSection({ plans = [] }: PackagesSectionProps) {
             আপনার শিক্ষকতা বা কোচিংয়ের জন্য সেরা প্যাকেজ
           </h2>
           <p className="text-slate-600 text-sm sm:text-lg mt-2 sm:mt-3">
-            নতুন <span className="font-extrabold text-emerald-700">Small (স্মল)</span> প্যাকেজ সহ যেকোনো প্ল্যান বেছে নিন। কোনো লুকানো চার্জ নেই, যেকোনো সময় আপগ্রেড সম্ভব।
+            নতুন <span className="font-extrabold text-emerald-700">Small (স্মল)</span> ও <span className="font-extrabold text-cyan-700">Diamond (ডায়মন্ড)</span> সহ যেকোনো প্ল্যান বেছে নিন। কোনো লুকানো চার্জ নেই, যেকোনো সময় আপগ্রেড সম্ভব।
           </p>
 
           <div className="inline-flex items-center gap-2 mt-4 sm:mt-6 px-4 py-1.5 bg-slate-100 rounded-full border border-slate-200 text-xs text-slate-600 font-semibold">
@@ -118,11 +134,12 @@ export function PackagesSection({ plans = [] }: PackagesSectionProps) {
         </div>
 
         {/* Pricing Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-4 items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-6 lg:gap-3 items-stretch">
           {planList.map((plan) => {
             const isSmall = plan.code === "small";
             const isPro = plan.code === "pro";
             const isUltra = plan.code === "ultra";
+            const isDiamond = plan.code === "diamond";
             const isFree = plan.code === "free";
 
             const checkoutUrl = isFree
@@ -132,8 +149,10 @@ export function PackagesSection({ plans = [] }: PackagesSectionProps) {
             return (
               <div
                 key={plan.code}
-                className={`relative rounded-3xl p-5 sm:p-6 lg:p-5 flex flex-col justify-between transition-all duration-300 ${
-                  isSmall
+                className={`relative rounded-3xl p-5 sm:p-6 lg:p-4 flex flex-col justify-between transition-all duration-300 ${
+                  isDiamond
+                    ? "bg-white border-2 border-cyan-500 shadow-xl shadow-cyan-600/15 ring-4 ring-cyan-500/10 lg:-translate-y-2 z-10"
+                    : isSmall
                     ? "bg-white border-2 border-emerald-500 shadow-xl shadow-emerald-600/15 ring-4 ring-emerald-500/10 lg:-translate-y-2 z-10"
                     : "bg-white border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-slate-300"
                 }`}
@@ -150,6 +169,14 @@ export function PackagesSection({ plans = [] }: PackagesSectionProps) {
                 {isUltra && (
                   <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[11px] sm:text-xs font-bold px-4 py-1 rounded-full shadow-sm tracking-wide">
                     কোচিং সেন্টারের পছন্দ
+                  </div>
+                )}
+
+                {/* Diamond Badge */}
+                {isDiamond && (
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-cyan-600 to-blue-600 text-white text-[11px] sm:text-xs font-black px-4 py-1 rounded-full shadow-md tracking-wide uppercase flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>আনলিমিটেড সুপার</span>
                   </div>
                 )}
 
@@ -170,6 +197,7 @@ export function PackagesSection({ plans = [] }: PackagesSectionProps) {
                       {isSmall && "ব্যক্তিগত শিক্ষক ও ছোট ব্যাচের জন্য সেরা"}
                       {isPro && "মাঝারি কোচিং ও পূর্ণাঙ্গ শিক্ষাপ্রতিষ্ঠান"}
                       {isUltra && "বড় কোচিং ও ওয়ার্ড (.docx) এক্সপোর্ট"}
+                      {isDiamond && "সম্পূর্ণ আনলিমিটেড পেপার ও প্রশ্ন, ভিআইপি"}
                     </p>
                   </div>
 
@@ -185,27 +213,29 @@ export function PackagesSection({ plans = [] }: PackagesSectionProps) {
 
                   {/* Core Capacity Box */}
                   <div className={`rounded-2xl p-4 mb-6 space-y-2.5 ${
-                    isSmall
+                    isDiamond
+                      ? "bg-cyan-50/80 border border-cyan-200/80 text-cyan-950"
+                      : isSmall
                       ? "bg-emerald-50/80 border border-emerald-200/80 text-emerald-950"
                       : "bg-slate-50 border border-slate-100 text-slate-800"
                   }`}>
                     <div className="flex items-center justify-between text-xs font-black">
                       <span>মোট প্রশ্নপত্র:</span>
-                      <span className={isSmall ? "text-emerald-700 font-extrabold text-sm" : "text-slate-900 font-bold"}>
-                        {formatBnNumber(plan.paperLimit)} টি পেপার
+                      <span className={isDiamond ? "text-cyan-700 font-extrabold text-sm" : isSmall ? "text-emerald-700 font-extrabold text-sm" : "text-slate-900 font-bold"}>
+                        {plan.paperLimit >= 999999 ? "আনলিমিটেড পেপার" : `${formatBnNumber(plan.paperLimit)} টি পেপার`}
                       </span>
                     </div>
 
                     <div className="flex items-center justify-between text-xs font-black">
                       <span>সর্বোচ্চ প্রশ্ন লিমিট:</span>
-                      <span className={isSmall ? "text-emerald-700 font-extrabold text-sm" : "text-slate-900 font-bold"}>
-                        {formatBnNumber(plan.totalQuestionsLimit)} টি
+                      <span className={isDiamond ? "text-cyan-700 font-extrabold text-sm" : isSmall ? "text-emerald-700 font-extrabold text-sm" : "text-slate-900 font-bold"}>
+                        {plan.totalQuestionsLimit >= 999999 ? "আনলিমিটেড কোটা" : `${formatBnNumber(plan.totalQuestionsLimit)} টি`}
                       </span>
                     </div>
 
                     <div className="flex items-center justify-between text-xs text-slate-600 font-medium pt-1 border-t border-slate-200/50">
                       <span>প্রতি পেপারে সর্বোচ্চ:</span>
-                      <span>{formatBnNumber(plan.questionLimit)} টি প্রশ্ন</span>
+                      <span>{plan.questionLimit >= 999999 ? "আনলিমিটেড প্রশ্ন" : `${formatBnNumber(plan.questionLimit)} টি প্রশ্ন`}</span>
                     </div>
                   </div>
 
@@ -297,7 +327,9 @@ export function PackagesSection({ plans = [] }: PackagesSectionProps) {
                 <a
                   href={checkoutUrl}
                   className={`w-full py-4 px-4 rounded-2xl text-center text-sm font-black transition-all duration-200 flex items-center justify-center gap-2 ${
-                    isSmall
+                    isDiamond
+                      ? "bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white shadow-lg shadow-cyan-600/30 active:scale-[0.98]"
+                      : isSmall
                       ? "bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-600/30 active:scale-[0.98]"
                       : isFree
                       ? "bg-slate-100 hover:bg-slate-200 text-slate-800"

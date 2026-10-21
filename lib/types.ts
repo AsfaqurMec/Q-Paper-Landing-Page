@@ -1,5 +1,5 @@
 export interface Plan {
-  code: "free" | "small" | "pro" | "ultra" | string;
+  code: "free" | "small" | "pro" | "ultra" | "diamond" | string;
   name: string;
   price: number;
   interval: "month" | "year" | string;
