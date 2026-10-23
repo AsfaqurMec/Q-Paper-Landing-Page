@@ -13,3 +13,5 @@ export function formatBnNumber(num: number | string | undefined): string {
 
 export const APP_URL = process.env.APP_URL || "http://localhost:3000";
 export const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:5001";
+export const APP_LOGIN_URL = `${APP_URL}/login?next=/dashboard/subscription`;
+export const APP_REGISTER_URL = `${APP_URL}/register?next=/dashboard/subscription`;

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import type { AcademicClass, CurriculumSubject } from "@/lib/types";
-import { formatBnNumber, APP_URL } from "@/lib/utils";
+import { formatBnNumber, APP_URL, APP_REGISTER_URL } from "@/lib/utils";
 import { BookOpen, Search, ArrowRight, CheckCircle2, GraduationCap, Sparkles } from "lucide-react";
 
 interface CurriculumExplorerProps {
@@ -128,7 +128,7 @@ export function CurriculumExplorer({ classes = [], subjects = [] }: CurriculumEx
                 </div>
 
                 <a
-                  href={`${APP_URL}/register`}
+                  href={APP_REGISTER_URL}
                   className="inline-flex items-center gap-1 text-emerald-700 font-bold hover:text-emerald-800 hover:underline"
                 >
                   <span>প্রশ্নপত্র তৈরি</span>

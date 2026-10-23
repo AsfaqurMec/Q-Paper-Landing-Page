@@ -21,7 +21,7 @@ import {
   SlidersHorizontal,
   BookmarkCheck
 } from "lucide-react";
-import { APP_URL } from "@/lib/utils";
+import { APP_URL, APP_REGISTER_URL } from "@/lib/utils";
 import { MathRenderer } from "@/components/math-renderer";
 
 export function Hero() {
@@ -70,7 +70,7 @@ export function Hero() {
         {/* Call to Actions */}
         <div className="mt-7 sm:mt-9 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 w-full max-w-md sm:max-w-none mx-auto">
           <a
-            href={`${APP_URL}/register`}
+            href={APP_REGISTER_URL}
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl sm:rounded-2xl text-sm sm:text-base font-bold text-white bg-emerald-600 hover:bg-emerald-700 shadow-xl shadow-emerald-600/25 hover:shadow-emerald-600/35 active:scale-[0.98] transition-all duration-200 group"
           >
             <span>বিনামূল্যে ট্রায়াল শুরু করুন</span>

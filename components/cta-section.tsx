@@ -1,5 +1,5 @@
 import { ArrowRight, Sparkles, CheckCircle2 } from "lucide-react";
-import { APP_URL } from "@/lib/utils";
+import { APP_URL, APP_LOGIN_URL, APP_REGISTER_URL } from "@/lib/utils";
 
 export function CtaSection() {
   return (
@@ -25,14 +25,14 @@ export function CtaSection() {
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mt-6 sm:mt-8 w-full max-w-md sm:max-w-none mx-auto">
           <a
-            href={`${APP_URL}/register`}
+            href={APP_REGISTER_URL}
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl text-sm sm:text-base font-bold text-slate-900 bg-emerald-400 hover:bg-emerald-300 active:scale-[0.98] shadow-lg shadow-emerald-500/25 transition-all duration-200 min-h-[46px]"
           >
             <span>এখনই ফ্রি একাউন্ট খুলুন</span>
             <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
           </a>
           <a
-            href={`${APP_URL}/login`}
+            href={APP_LOGIN_URL}
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 sm:px-7 py-3.5 sm:py-4 rounded-xl text-sm sm:text-base font-semibold text-white bg-slate-800/90 hover:bg-slate-800 active:scale-[0.98] border border-slate-700 transition-all duration-200 min-h-[46px]"
           >
             <span>পূর্বের একাউন্টে লগইন করুন</span>

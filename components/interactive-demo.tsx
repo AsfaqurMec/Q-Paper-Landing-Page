@@ -18,7 +18,7 @@ import {
   FileCheck2,
   ExternalLink
 } from "lucide-react";
-import { formatBnNumber, APP_URL } from "@/lib/utils";
+import { formatBnNumber, APP_URL, APP_REGISTER_URL } from "@/lib/utils";
 import { MathRenderer } from "@/components/math-renderer";
 
 interface McqQuestion {
@@ -762,7 +762,7 @@ export function InteractiveDemo() {
               </div>
               <div className="flex items-center gap-2">
                 <a
-                  href={`${APP_URL}/register`}
+                  href={APP_REGISTER_URL}
                   className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition-all active:scale-95"
                 >
                   <Download className="w-3.5 h-3.5" />

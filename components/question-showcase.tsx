@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import type { BankQuestionSample } from "@/lib/types";
-import { formatBnNumber, APP_URL } from "@/lib/utils";
+import { formatBnNumber, APP_URL, APP_REGISTER_URL } from "@/lib/utils";
 import {
   HelpCircle,
   Check,
@@ -533,7 +533,7 @@ export function QuestionShowcase({ questions = [] }: QuestionShowcaseProps) {
           </div>
 
           <a
-            href={`${APP_URL}/register`}
+            href={APP_REGISTER_URL}
             className="shrink-0 inline-flex items-center gap-2 px-7 py-3.5 rounded-2xl text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 shadow-md shadow-emerald-600/20 transition-all hover:scale-105 active:scale-98"
           >
             <span>সম্পূর্ণ প্রশ্নব্যাংক দেখুন (ফ্রি ট্রায়াল)</span>

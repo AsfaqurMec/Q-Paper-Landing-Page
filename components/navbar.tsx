@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Menu, X, ArrowRight, Sparkles, BookOpen, Layers } from "lucide-react";
-import { APP_URL } from "@/lib/utils";
+import { APP_URL, APP_LOGIN_URL, APP_REGISTER_URL } from "@/lib/utils";
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -103,13 +103,13 @@ export function Navbar() {
           {/* Action Buttons to Software */}
           <div className="hidden md:flex items-center gap-3">
             <a
-              href={`${APP_URL}/login`}
+              href={APP_LOGIN_URL}
               className="text-sm font-semibold text-slate-700 hover:text-emerald-600 px-4 py-2 rounded-lg hover:bg-slate-100/80 transition"
             >
               লগইন করুন
             </a>
             <a
-              href={`${APP_URL}/register`}
+              href={APP_REGISTER_URL}
               className="inline-flex items-center gap-2 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 px-5 py-2.5 rounded-xl shadow-sm hover:shadow-md hover:shadow-emerald-600/20 transition-all duration-200"
             >
               <span>ফ্রি শুরু করুন</span>
@@ -120,7 +120,7 @@ export function Navbar() {
           {/* Mobile Actions: Quick CTA & Menu Button */}
           <div className="flex md:hidden items-center gap-2">
             <a
-              href={`${APP_URL}/register`}
+              href={APP_REGISTER_URL}
               className="text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 px-3 py-1.5 rounded-sm shadow-xs active:scale-95 transition"
             >
               ফ্রি ট্রায়াল
@@ -196,13 +196,13 @@ export function Navbar() {
 
             <div className="pt-4 flex flex-col gap-2">
               <a
-                href={`${APP_URL}/login`}
+                href={APP_LOGIN_URL}
                 className="w-full text-center py-2.5 text-sm font-semibold text-slate-800 bg-slate-100 rounded-xl hover:bg-slate-200 transition"
               >
                 লগইন করুন
               </a>
               <a
-                href={`${APP_URL}/register`}
+                href={APP_REGISTER_URL}
                 className="w-full text-center py-2.5 text-sm font-semibold text-white bg-emerald-600 rounded-xl hover:bg-emerald-700 shadow-md transition"
               >
                 ফ্রি অ্যাকাউন্ট তৈরি করুন

@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import type { Plan } from "@/lib/types";
-import { formatBnNumber, APP_URL } from "@/lib/utils";
+import { formatBnNumber, APP_URL, APP_REGISTER_URL } from "@/lib/utils";
 import {
   Check,
   X,
@@ -15,7 +15,9 @@ import {
   FileDown,
   Layers,
   Award,
-  Lock
+  Lock,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 
 interface PackagesSectionProps {
@@ -107,6 +109,63 @@ export function PackagesSection({ plans = [] }: PackagesSectionProps) {
     }
   ];
 
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const checkScrollState = useCallback(() => {
+    if (!sliderRef.current) return;
+    const { scrollLeft, scrollWidth, clientWidth } = sliderRef.current;
+    setCanScrollLeft(scrollLeft > 15);
+    setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 15);
+
+    const card = sliderRef.current.children[0] as HTMLElement | undefined;
+    if (card) {
+      const cardWidth = card.offsetWidth + 24;
+      const newIdx = Math.round(scrollLeft / cardWidth);
+      setActiveIndex(Math.min(planList.length - 1, Math.max(0, newIdx)));
+    }
+  }, [planList.length]);
+
+  useEffect(() => {
+    const slider = sliderRef.current;
+    if (!slider) return;
+
+    checkScrollState();
+    window.addEventListener("resize", checkScrollState);
+    return () => window.removeEventListener("resize", checkScrollState);
+  }, [checkScrollState]);
+
+  const getScrollAmount = () => {
+    if (!sliderRef.current) return 360;
+    const firstCard = sliderRef.current.children[0] as HTMLElement | undefined;
+    return firstCard ? firstCard.offsetWidth + 24 : 360;
+  };
+
+  const handlePrev = () => {
+    if (!sliderRef.current) return;
+    sliderRef.current.scrollBy({ left: -getScrollAmount(), behavior: "smooth" });
+  };
+
+  const handleNext = () => {
+    if (!sliderRef.current) return;
+    sliderRef.current.scrollBy({ left: getScrollAmount(), behavior: "smooth" });
+  };
+
+  const scrollToIndex = (idx: number) => {
+    if (!sliderRef.current) return;
+    const cards = sliderRef.current.children;
+    if (cards[idx]) {
+      (cards[idx] as HTMLElement).scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "start"
+      });
+    }
+  };
+
+
   return (
     <section id="pricing" className="py-16 sm:py-24 bg-gradient-to-b from-white via-slate-50/70 to-white relative overflow-hidden">
       {/* Background radial accent */}
@@ -133,8 +192,82 @@ export function PackagesSection({ plans = [] }: PackagesSectionProps) {
           </div>
         </div>
 
-        {/* Pricing Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-6 items-stretch">
+        {/* TOP CONTROLS & SLIDE HINT BAR */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 px-1">
+          <div className="flex items-center gap-2">
+            <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold border border-emerald-200">
+              গ্রিড ভিউ (৩টি কার্ড)
+            </span>
+            <span className="text-xs text-slate-500 font-medium flex items-center gap-1.5">
+              অন্যান্য প্যাকেজ দেখতে স্লাইড করুন
+              <span className="inline-block animate-pulse text-emerald-600 font-bold">➔</span>
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2 self-end sm:self-auto">
+            <div className="text-xs font-semibold text-slate-500 px-3 py-1 rounded-lg bg-slate-100 border border-slate-200">
+              প্যাকেজ{" "}
+              <span className="font-bold text-slate-900">
+                {formatBnNumber(activeIndex + 1)}-{formatBnNumber(Math.min(activeIndex + 3, planList.length))}
+              </span>{" "}
+              / {formatBnNumber(planList.length)}
+            </div>
+
+            <button
+              type="button"
+              onClick={handlePrev}
+              disabled={!canScrollLeft}
+              className="h-8 w-8 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 shadow-xs flex items-center justify-center text-slate-700 disabled:opacity-30 transition-all cursor-pointer"
+              aria-label="পূর্ববর্তী প্যাকেজ"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+
+            <button
+              type="button"
+              onClick={handleNext}
+              disabled={!canScrollRight}
+              className="h-8 w-8 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 shadow-xs flex items-center justify-center text-slate-700 disabled:opacity-30 transition-all cursor-pointer"
+              aria-label="পরবর্তী প্যাকেজ"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+
+        {/* Pricing Cards Slider Track with Floating Buttons */}
+        <div className="relative group">
+          {/* Floating Left Button */}
+          <button
+            type="button"
+            onClick={handlePrev}
+            disabled={!canScrollLeft}
+            className={`absolute -left-3 sm:-left-5 top-1/2 -translate-y-1/2 z-20 h-11 w-11 rounded-full bg-white/95 border-2 border-slate-200 shadow-xl backdrop-blur flex items-center justify-center text-slate-800 hover:bg-slate-50 hover:scale-110 active:scale-95 transition-all cursor-pointer ${
+              !canScrollLeft ? "opacity-0 pointer-events-none" : "opacity-90 hover:opacity-100"
+            }`}
+            aria-label="পূর্ববর্তী প্যাকেজ"
+          >
+            <ChevronLeft className="h-6 w-6 stroke-[2.5]" />
+          </button>
+
+          {/* Floating Right Button */}
+          <button
+            type="button"
+            onClick={handleNext}
+            disabled={!canScrollRight}
+            className={`absolute -right-3 sm:-right-5 top-1/2 -translate-y-1/2 z-20 h-11 w-11 rounded-full bg-white/95 border-2 border-slate-200 shadow-xl backdrop-blur flex items-center justify-center text-slate-800 hover:bg-slate-50 hover:scale-110 active:scale-95 transition-all cursor-pointer ${
+              !canScrollRight ? "opacity-0 pointer-events-none" : "opacity-90 hover:opacity-100"
+            }`}
+            aria-label="পরবর্তী প্যাকেজ"
+          >
+            <ChevronRight className="h-6 w-6 stroke-[2.5]" />
+          </button>
+
+          <div
+            ref={sliderRef}
+            onScroll={checkScrollState}
+            className="flex gap-5 sm:gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory pt-5 pb-6 px-1 no-scrollbar [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden items-stretch"
+          >
           {planList.map((plan) => {
             const isSmall = plan.code === "small";
             const isPro = plan.code === "pro";
@@ -143,13 +276,13 @@ export function PackagesSection({ plans = [] }: PackagesSectionProps) {
             const isFree = plan.code === "free";
 
             const checkoutUrl = isFree
-              ? `${APP_URL}/register`
+              ? APP_REGISTER_URL
               : `${APP_URL}/checkout?plan=${plan.code}`;
 
             return (
               <div
                 key={plan.code}
-                className={`relative rounded-3xl p-5 sm:p-6 lg:p-4 flex flex-col justify-between transition-all duration-300 ${
+                className={`shrink-0 w-full sm:w-[calc((100%-24px)/2)] lg:w-[calc((100%-48px)/3)] snap-start relative rounded-3xl p-5 sm:p-6 lg:p-5 flex flex-col justify-between transition-all duration-300 ${
                   isDiamond
                     ? "bg-white border-2 border-cyan-500 shadow-xl shadow-cyan-600/15 ring-4 ring-cyan-500/10 lg:-translate-y-2 z-10"
                     : isSmall
@@ -342,6 +475,34 @@ export function PackagesSection({ plans = [] }: PackagesSectionProps) {
               </div>
             );
           })}
+        </div>
+
+        </div>
+
+        {/* BOTTOM DOT INDICATORS & INTERACTIVE PILLS */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-4 mb-2">
+          <div className="flex items-center gap-2 bg-slate-100/80 p-1.5 rounded-full border border-slate-200 shadow-xs">
+            {planList.map((plan, idx) => {
+              const isVisible = idx >= activeIndex && idx < activeIndex + 3;
+
+              return (
+                <button
+                  key={plan.code}
+                  type="button"
+                  onClick={() => scrollToIndex(idx)}
+                  className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                    isVisible
+                      ? "bg-emerald-600 text-white shadow-xs"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/60"
+                  }`}
+                  title={`${plan.name} প্যাকেজে স্ক্রোল করুন`}
+                >
+                  <span className={`h-2 w-2 rounded-full ${isVisible ? "bg-white" : "bg-slate-400"}`} />
+                  <span className="capitalize">{plan.name}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Enhanced Payment & Security Banner */}

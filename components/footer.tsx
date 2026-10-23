@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { APP_URL } from "@/lib/utils";
+import { APP_URL, APP_LOGIN_URL, APP_REGISTER_URL } from "@/lib/utils";
 import { Heart } from "lucide-react";
 
 export function Footer() {
@@ -74,7 +74,7 @@ export function Footer() {
             <h4 className="text-white font-bold text-sm tracking-wide">প্যাকেজসমূহ</h4>
             <ul className="space-y-1 text-xs sm:text-sm">
               <li>
-                <a href={`${APP_URL}/register`} className="py-1 inline-block hover:text-emerald-400 transition">
+                <a href={APP_REGISTER_URL} className="py-1 inline-block hover:text-emerald-400 transition">
                   Free প্ল্যান (৳০)
                 </a>
               </li>
@@ -119,7 +119,7 @@ export function Footer() {
             <ul className="space-y-1 text-xs sm:text-sm">
               <li>
                 <a
-                  href={`${APP_URL}/login`}
+                  href={APP_LOGIN_URL}
                   className="py-1 text-slate-300 hover:text-emerald-400 transition inline-block font-medium"
                 >
                   সফটওয়্যারে লগইন
@@ -127,7 +127,7 @@ export function Footer() {
               </li>
               <li>
                 <a
-                  href={`${APP_URL}/register`}
+                  href={APP_REGISTER_URL}
                   className="py-1 text-slate-300 hover:text-emerald-400 transition inline-block font-medium"
                 >
                   নতুন অ্যাকাউন্ট তৈরি
