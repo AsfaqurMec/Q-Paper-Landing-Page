@@ -27,8 +27,13 @@ export function Footer() {
             <p className="text-slate-400 text-xs sm:text-sm leading-relaxed max-w-sm">
               বাংলাদেশের শিক্ষক, কোচিং সেন্টার ও শিক্ষাপ্রতিষ্ঠানের জন্য তৈরি আধুনিক প্রশ্নপত্র ও প্রশ্নব্যাংক প্ল্যাটফর্ম। NCTB কারিকুলাম অনুযায়ী ৩ মিনিটে তৈরি করুন ২-কলাম স্ট্যান্ডার্ড প্রশ্নপত্র।
             </p>
-            <div className="text-xs text-slate-500">
-              হেল্পলাইন ও সাপোর্ট: support@q-paper.app
+            <div className="flex flex-col gap-1">
+            <div className="text-sm text-white">
+              হেল্পলাইন ও সাপোর্ট: 01956230265 (WhatsApp)
+            </div>
+            <div className="text-sm text-white">
+              Email: asfaqurrahman055@gmail.com
+            </div>
             </div>
           </div>
 

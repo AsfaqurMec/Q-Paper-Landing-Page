@@ -48,7 +48,7 @@ export function Hero() {
             সংস্করণ ২.৫
           </span> */}
           <span className="truncate">
-            বাংলাদেশের ১ম এআই প্রশ্নপত্র জেনারেটর
+          আধুনিক প্রশ্নপত্র ও প্রশ্নব্যাংক প্ল্যাটফর্ম
           </span>
           <Sparkles className="w-3.5 h-3.5 text-emerald-700 animate-spin-slow shrink-0" />
         </div>
