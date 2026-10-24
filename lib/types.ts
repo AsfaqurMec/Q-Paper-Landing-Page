@@ -3,6 +3,9 @@ export interface Plan {
   name: string;
   price: number;
   interval: "month" | "year" | string;
+  duration?: string;
+  durationDays?: number;
+  description?: string;
   paperLimit: number;
   questionLimit: number;
   totalQuestionsLimit: number;
@@ -14,6 +17,7 @@ export interface Plan {
   randomGenerator: boolean;
   multipleVersions: boolean;
 }
+
 
 export interface CurriculumStats {
   totalClasses: number;

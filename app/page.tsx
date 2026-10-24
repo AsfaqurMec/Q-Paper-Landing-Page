@@ -33,6 +33,7 @@ export default async function LandingPage() {
     fetchSampleQuestions({ limit: 12 })
   ]);
 
+  console.log(plans);
   return (
     <div className="min-h-screen flex flex-col bg-white text-slate-900">
       <Navbar />

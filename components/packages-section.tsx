@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useRef, useCallback, useEffect } from "react";
 import type { Plan } from "@/lib/types";
 import { formatBnNumber, APP_URL, APP_REGISTER_URL } from "@/lib/utils";
 import {
@@ -9,180 +8,137 @@ import {
   Sparkles,
   ArrowRight,
   ShieldCheck,
-  CreditCard,
-  Zap,
-  HelpCircle,
-  FileDown,
-  Layers,
-  Award,
-  Lock,
-  ChevronLeft,
-  ChevronRight
+  Clock,
+  Crown,
+  Zap
 } from "lucide-react";
 
 interface PackagesSectionProps {
   plans?: Plan[];
 }
 
+const defaultPlans: Plan[] = [
+  {
+    code: "free",
+    name: "Free",
+    price: 0,
+    interval: "month",
+    duration: "লাইফটাইম",
+    durationDays: 0,
+    paperLimit: 2,
+    questionLimit: 30,
+    totalQuestionsLimit: 60,
+    exports: ["pdf"],
+    watermark: true,
+    questionBank: false,
+    branding: false,
+    randomGenerator: false,
+    multipleVersions: false,
+    importQuestion: false,
+    description: "সফটওয়্যার পরীক্ষা ও ফ্রি ট্রায়াল"
+  },
+  {
+    code: "small",
+    name: "Small",
+    price: 100,
+    interval: "month",
+    duration: "৩০ দিন (১ মাস)",
+    durationDays: 30,
+    paperLimit: 100,
+    questionLimit: 50,
+    totalQuestionsLimit: 3500,
+    exports: ["pdf"],
+    watermark: false,
+    questionBank: true,
+    branding: true,
+    randomGenerator: true,
+    multipleVersions: true,
+    importQuestion: false,
+    description: "ব্যক্তিগত শিক্ষক ও ছোট ব্যাচের জন্য সেরা"
+  },
+  {
+    code: "pro",
+    name: "Pro",
+    price: 500,
+    interval: "month",
+    duration: "৩০ দিন (১ মাস)",
+    durationDays: 30,
+    paperLimit: 2000,
+    questionLimit: 200,
+    totalQuestionsLimit: 7000,
+    exports: ["pdf"],
+    watermark: false,
+    questionBank: true,
+    branding: true,
+    randomGenerator: true,
+    multipleVersions: true,
+    importQuestion: false,
+    description: "মাঝারি কোচিং ও পূর্ণাঙ্গ শিক্ষাপ্রতিষ্ঠান"
+  },
+  {
+    code: "ultra",
+    name: "Ultra",
+    price: 1000,
+    interval: "month",
+    duration: "৩০ দিন (১ মাস)",
+    durationDays: 30,
+    paperLimit: 5000,
+    questionLimit: 500,
+    totalQuestionsLimit: 15000,
+    exports: ["pdf", "docx"],
+    watermark: false,
+    questionBank: true,
+    branding: true,
+    randomGenerator: true,
+    multipleVersions: true,
+    importQuestion: true,
+    description: "বড় কোচিং ও ওয়ার্ড (.docx) এক্সপোর্ট"
+  },
+  {
+    code: "diamond",
+    name: "Diamond",
+    price: 3500,
+    interval: "month",
+    duration: "৩০ দিন (১ মাস)",
+    durationDays: 30,
+    paperLimit: 999999,
+    questionLimit: 999999,
+    totalQuestionsLimit: 999999,
+    exports: ["pdf", "docx"],
+    watermark: false,
+    questionBank: true,
+    branding: true,
+    randomGenerator: true,
+    multipleVersions: true,
+    importQuestion: true,
+    description: "সম্পূর্ণ আনলিমিটেড পেপার ও প্রশ্ন, ভিআইপি"
+  }
+];
+
 export function PackagesSection({ plans = [] }: PackagesSectionProps) {
   // If backend plans are passed, use them; otherwise fallback to default schema
-  const planList = Array.isArray(plans) && plans.length > 0 ? plans : [
-    {
-      code: "free",
-      name: "Free",
-      price: 0,
-      interval: "month",
-      paperLimit: 2,
-      questionLimit: 30,
-      totalQuestionsLimit: 60,
-      exports: ["pdf"],
-      watermark: true,
-      questionBank: false,
-      branding: false,
-      randomGenerator: false,
-      multipleVersions: false,
-      importQuestion: false
-    },
-    {
-      code: "small",
-      name: "Small",
-      price: 100,
-      interval: "month",
-      paperLimit: 100,
-      questionLimit: 50,
-      totalQuestionsLimit: 3500,
-      exports: ["pdf"],
-      watermark: false,
-      questionBank: true,
-      branding: true,
-      randomGenerator: true,
-      multipleVersions: true,
-      importQuestion: false
-    },
-    {
-      code: "pro",
-      name: "Pro",
-      price: 500,
-      interval: "month",
-      paperLimit: 2000,
-      questionLimit: 200,
-      totalQuestionsLimit: 7000,
-      exports: ["pdf"],
-      watermark: false,
-      questionBank: true,
-      branding: true,
-      randomGenerator: true,
-      multipleVersions: true,
-      importQuestion: false
-    },
-    {
-      code: "ultra",
-      name: "Ultra",
-      price: 1000,
-      interval: "month",
-      paperLimit: 5000,
-      questionLimit: 500,
-      totalQuestionsLimit: 15000,
-      exports: ["pdf", "docx"],
-      watermark: false,
-      questionBank: true,
-      branding: true,
-      randomGenerator: true,
-      multipleVersions: true,
-      importQuestion: true
-    },
-    {
-      code: "diamond",
-      name: "Diamond",
-      price: 3500,
-      interval: "month",
-      paperLimit: 999999,
-      questionLimit: 999999,
-      totalQuestionsLimit: 999999,
-      exports: ["pdf", "docx"],
-      watermark: false,
-      questionBank: true,
-      branding: true,
-      randomGenerator: true,
-      multipleVersions: true,
-      importQuestion: true
-    }
-  ];
-
-  const sliderRef = useRef<HTMLDivElement>(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
-  const [activeIndex, setActiveIndex] = useState(0);
-
-  const checkScrollState = useCallback(() => {
-    if (!sliderRef.current) return;
-    const { scrollLeft, scrollWidth, clientWidth } = sliderRef.current;
-    setCanScrollLeft(scrollLeft > 15);
-    setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 15);
-
-    const card = sliderRef.current.children[0] as HTMLElement | undefined;
-    if (card) {
-      const cardWidth = card.offsetWidth + 24;
-      const newIdx = Math.round(scrollLeft / cardWidth);
-      setActiveIndex(Math.min(planList.length - 1, Math.max(0, newIdx)));
-    }
-  }, [planList.length]);
-
-  useEffect(() => {
-    const slider = sliderRef.current;
-    if (!slider) return;
-
-    checkScrollState();
-    window.addEventListener("resize", checkScrollState);
-    return () => window.removeEventListener("resize", checkScrollState);
-  }, [checkScrollState]);
-
-  const getScrollAmount = () => {
-    if (!sliderRef.current) return 360;
-    const firstCard = sliderRef.current.children[0] as HTMLElement | undefined;
-    return firstCard ? firstCard.offsetWidth + 24 : 360;
-  };
-
-  const handlePrev = () => {
-    if (!sliderRef.current) return;
-    sliderRef.current.scrollBy({ left: -getScrollAmount(), behavior: "smooth" });
-  };
-
-  const handleNext = () => {
-    if (!sliderRef.current) return;
-    sliderRef.current.scrollBy({ left: getScrollAmount(), behavior: "smooth" });
-  };
-
-  const scrollToIndex = (idx: number) => {
-    if (!sliderRef.current) return;
-    const cards = sliderRef.current.children;
-    if (cards[idx]) {
-      (cards[idx] as HTMLElement).scrollIntoView({
-        behavior: "smooth",
-        block: "nearest",
-        inline: "start"
-      });
-    }
-  };
-
+  // Always sort in ascending order of price (Free -> Small -> Pro -> Ultra -> Diamond)
+  const rawPlans = Array.isArray(plans) && plans.length > 0 ? plans : defaultPlans;
+  const planList = [...rawPlans].sort((a, b) => Number(a.price || 0) - Number(b.price || 0));
 
   return (
     <section id="pricing" className="py-16 sm:py-24 bg-gradient-to-b from-white via-slate-50/70 to-white relative overflow-hidden">
       {/* Background radial accent */}
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-emerald-500/5 blur-[120px] rounded-full pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 relative">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
+        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-100 text-emerald-800 text-xs sm:text-sm font-bold mb-3 shadow-xs">
             <Sparkles className="w-4 h-4 text-emerald-600 animate-pulse" />
             <span>স্বচ্ছ ও সাশ্রয়ী সাবস্ক্রিপশন প্ল্যান</span>
           </div>
+
           <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-slate-900 tracking-tight">
             আপনার শিক্ষকতা বা কোচিংয়ের জন্য সেরা প্যাকেজ
           </h2>
           <p className="text-slate-600 text-sm sm:text-lg mt-2 sm:mt-3">
-            নতুন <span className="font-extrabold text-emerald-700">Small (স্মল)</span> ও <span className="font-extrabold text-cyan-700">Diamond (ডায়মন্ড)</span> সহ যেকোনো প্ল্যান বেছে নিন। কোনো লুকানো চার্জ নেই, যেকোনো সময় আপগ্রেড সম্ভব।
+            নতুন <span className="font-extrabold text-emerald-700">Small (স্মল)</span> ও <span className="font-extrabold text-cyan-700">Diamond (ডায়মন্ড)</span> সহ আপনার বাজেট অনুযায়ী প্ল্যান বেছে নিন। কোনো লুকানো চার্জ নেই, যেকোনো সময় আপগ্রেড সম্ভব।
           </p>
 
           <div className="inline-flex items-center gap-2 mt-4 sm:mt-6 px-4 py-1.5 bg-slate-100 rounded-full border border-slate-200 text-xs text-slate-600 font-semibold">
@@ -192,82 +148,8 @@ export function PackagesSection({ plans = [] }: PackagesSectionProps) {
           </div>
         </div>
 
-        {/* TOP CONTROLS & SLIDE HINT BAR */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 px-1">
-          <div className="flex items-center gap-2">
-            <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold border border-emerald-200">
-              গ্রিড ভিউ (৩টি কার্ড)
-            </span>
-            <span className="text-xs text-slate-500 font-medium flex items-center gap-1.5">
-              অন্যান্য প্যাকেজ দেখতে স্লাইড করুন
-              <span className="inline-block animate-pulse text-emerald-600 font-bold">➔</span>
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2 self-end sm:self-auto">
-            <div className="text-xs font-semibold text-slate-500 px-3 py-1 rounded-lg bg-slate-100 border border-slate-200">
-              প্যাকেজ{" "}
-              <span className="font-bold text-slate-900">
-                {formatBnNumber(activeIndex + 1)}-{formatBnNumber(Math.min(activeIndex + 3, planList.length))}
-              </span>{" "}
-              / {formatBnNumber(planList.length)}
-            </div>
-
-            <button
-              type="button"
-              onClick={handlePrev}
-              disabled={!canScrollLeft}
-              className="h-8 w-8 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 shadow-xs flex items-center justify-center text-slate-700 disabled:opacity-30 transition-all cursor-pointer"
-              aria-label="পূর্ববর্তী প্যাকেজ"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </button>
-
-            <button
-              type="button"
-              onClick={handleNext}
-              disabled={!canScrollRight}
-              className="h-8 w-8 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 shadow-xs flex items-center justify-center text-slate-700 disabled:opacity-30 transition-all cursor-pointer"
-              aria-label="পরবর্তী প্যাকেজ"
-            >
-              <ChevronRight className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
-
-        {/* Pricing Cards Slider Track with Floating Buttons */}
-        <div className="relative group">
-          {/* Floating Left Button */}
-          <button
-            type="button"
-            onClick={handlePrev}
-            disabled={!canScrollLeft}
-            className={`absolute -left-3 sm:-left-5 top-1/2 -translate-y-1/2 z-20 h-11 w-11 rounded-full bg-white/95 border-2 border-slate-200 shadow-xl backdrop-blur flex items-center justify-center text-slate-800 hover:bg-slate-50 hover:scale-110 active:scale-95 transition-all cursor-pointer ${
-              !canScrollLeft ? "opacity-0 pointer-events-none" : "opacity-90 hover:opacity-100"
-            }`}
-            aria-label="পূর্ববর্তী প্যাকেজ"
-          >
-            <ChevronLeft className="h-6 w-6 stroke-[2.5]" />
-          </button>
-
-          {/* Floating Right Button */}
-          <button
-            type="button"
-            onClick={handleNext}
-            disabled={!canScrollRight}
-            className={`absolute -right-3 sm:-right-5 top-1/2 -translate-y-1/2 z-20 h-11 w-11 rounded-full bg-white/95 border-2 border-slate-200 shadow-xl backdrop-blur flex items-center justify-center text-slate-800 hover:bg-slate-50 hover:scale-110 active:scale-95 transition-all cursor-pointer ${
-              !canScrollRight ? "opacity-0 pointer-events-none" : "opacity-90 hover:opacity-100"
-            }`}
-            aria-label="পরবর্তী প্যাকেজ"
-          >
-            <ChevronRight className="h-6 w-6 stroke-[2.5]" />
-          </button>
-
-          <div
-            ref={sliderRef}
-            onScroll={checkScrollState}
-            className="flex gap-5 sm:gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory pt-5 pb-6 px-1 no-scrollbar [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden items-stretch"
-          >
+        {/* 3 CARDS PER ROW (ROWS 3 EACH) FOR LARGE DEVICES */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 items-stretch">
           {planList.map((plan) => {
             const isSmall = plan.code === "small";
             const isPro = plan.code === "pro";
@@ -279,36 +161,47 @@ export function PackagesSection({ plans = [] }: PackagesSectionProps) {
               ? APP_REGISTER_URL
               : `${APP_URL}/checkout?plan=${plan.code}`;
 
+            const durationText = plan.duration || (isFree ? "লাইফটাইম" : "৩০ দিন (১ মাস)");
+
             return (
               <div
                 key={plan.code}
-                className={`shrink-0 w-full sm:w-[calc((100%-24px)/2)] lg:w-[calc((100%-48px)/3)] snap-start relative rounded-3xl p-5 sm:p-6 lg:p-5 flex flex-col justify-between transition-all duration-300 ${
+                className={`relative rounded-3xl p-5 sm:p-6 lg:p-6 flex flex-col justify-between transition-all duration-300 ${
                   isDiamond
-                    ? "bg-white border-2 border-cyan-500 shadow-xl shadow-cyan-600/15 ring-4 ring-cyan-500/10 lg:-translate-y-2 z-10"
+                    ? "bg-white border-2 border-cyan-500 shadow-xl shadow-cyan-600/15 ring-4 ring-cyan-500/10 hover:shadow-2xl hover:-translate-y-1 z-10"
                     : isSmall
-                    ? "bg-white border-2 border-emerald-500 shadow-xl shadow-emerald-600/15 ring-4 ring-emerald-500/10 lg:-translate-y-2 z-10"
+                    ? "bg-white border-2 border-emerald-500 shadow-xl shadow-emerald-600/15 ring-4 ring-emerald-500/10 hover:shadow-2xl hover:-translate-y-1 z-10"
+                    : isUltra
+                    ? "bg-white border-2 border-purple-500/80 shadow-lg hover:shadow-xl hover:-translate-y-1"
+                    : isPro
+                    ? "bg-white border-2 border-blue-500/80 shadow-lg hover:shadow-xl hover:-translate-y-1"
                     : "bg-white border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-slate-300"
                 }`}
               >
-                {/* Popular Badge for Small Plan */}
+                {/* Popular / Feature Badges */}
                 {isSmall && (
-                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-[11px] sm:text-xs font-black px-4 py-1 rounded-full shadow-md tracking-wide uppercase flex items-center gap-1.5">
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-[11px] sm:text-xs font-black px-4 py-1 rounded-full shadow-md tracking-wide uppercase flex items-center gap-1.5 whitespace-nowrap">
                     <Sparkles className="w-3.5 h-3.5" />
-                    <span>সেরা ভ্যালু</span>
+                    <span>সেরা ভ্যালু প্যাকেজ</span>
                   </div>
                 )}
 
-                {/* Ultra Badge */}
+                {isPro && (
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-blue-600 text-white text-[11px] sm:text-xs font-bold px-4 py-1 rounded-full shadow-sm tracking-wide flex items-center gap-1 whitespace-nowrap">
+                    <Zap className="w-3.5 h-3.5" />
+                    <span>জনপ্রিয় চয়েস</span>
+                  </div>
+                )}
+
                 {isUltra && (
-                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[11px] sm:text-xs font-bold px-4 py-1 rounded-full shadow-sm tracking-wide">
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[11px] sm:text-xs font-bold px-4 py-1 rounded-full shadow-sm tracking-wide whitespace-nowrap">
                     কোচিং সেন্টারের পছন্দ
                   </div>
                 )}
 
-                {/* Diamond Badge */}
                 {isDiamond && (
-                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-cyan-600 to-blue-600 text-white text-[11px] sm:text-xs font-black px-4 py-1 rounded-full shadow-md tracking-wide uppercase flex items-center gap-1.5">
-                    <Sparkles className="w-3.5 h-3.5" />
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-cyan-600 to-blue-600 text-white text-[11px] sm:text-xs font-black px-4 py-1 rounded-full shadow-md tracking-wide uppercase flex items-center gap-1.5 whitespace-nowrap">
+                    <Crown className="w-3.5 h-3.5" />
                     <span>আনলিমিটেড সুপার</span>
                   </div>
                 )}
@@ -316,42 +209,69 @@ export function PackagesSection({ plans = [] }: PackagesSectionProps) {
                 <div>
                   {/* Plan Header */}
                   <div className="mb-4">
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between gap-2">
                       <h3 className="text-xl sm:text-2xl font-black text-slate-900 capitalize">
                         {plan.name}
                       </h3>
-                      <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider bg-slate-100 px-2 py-0.5 rounded-md">
-                        {plan.interval === "month" ? "মাসিক" : plan.interval}
+                      {/* Prominent Duration Badge */}
+                      <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/80 shrink-0">
+                        <Clock className="w-3.5 h-3.5 text-emerald-600" />
+                        <span>{durationText}</span>
                       </span>
                     </div>
 
-                    <p className="text-xs text-slate-500 mt-1">
-                      {isFree && "সফটওয়্যার পরীক্ষা ও ফ্রি ট্রায়াল"}
-                      {isSmall && "ব্যক্তিগত শিক্ষক ও ছোট ব্যাচের জন্য সেরা"}
-                      {isPro && "মাঝারি কোচিং ও পূর্ণাঙ্গ শিক্ষাপ্রতিষ্ঠান"}
-                      {isUltra && "বড় কোচিং ও ওয়ার্ড (.docx) এক্সপোর্ট"}
-                      {isDiamond && "সম্পূর্ণ আনলিমিটেড পেপার ও প্রশ্ন, ভিআইপি"}
+                    <p className="text-xs text-slate-500 mt-1 min-h-[32px] leading-relaxed">
+                      {plan.description || (
+                        <>
+                          {isFree && "সফটওয়্যার পরীক্ষা ও ফ্রি ট্রায়াল"}
+                          {isSmall && "ব্যক্তিগত শিক্ষক ও ছোট ব্যাচের জন্য সেরা"}
+                          {isPro && "মাঝারি কোচিং ও পূর্ণাঙ্গ শিক্ষাপ্রতিষ্ঠান"}
+                          {isUltra && "বড় কোচিং ও ওয়ার্ড (.docx) এক্সপোর্ট"}
+                          {isDiamond && "সম্পূর্ণ আনলিমিটেড পেপার ও প্রশ্ন, ভিআইপি"}
+                        </>
+                      )}
                     </p>
                   </div>
 
-                  {/* Price Block */}
-                  <div className="flex items-baseline gap-1 my-5 pb-5 border-b border-slate-100">
-                    <span className="text-4xl sm:text-5xl font-black text-slate-900 tracking-tight">
-                      ৳{formatBnNumber(plan.price)}
-                    </span>
-                    <span className="text-sm font-semibold text-slate-500">
-                      / {plan.interval === "month" ? "মাস" : "মেয়াদ"}
+                  {/* Price & Duration Block */}
+                  <div className="flex items-baseline justify-between gap-2 my-4 pb-4 border-b border-slate-100">
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
+                        ৳{formatBnNumber(plan.price)}
+                      </span>
+                      <span className="text-xs sm:text-sm font-semibold text-slate-500">
+                        {isFree ? " / ফ্রি ট্রায়াল" : ""}
+                      </span>
+                    </div>
+
+                    <span className="text-[11px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md">
+                      মেয়াদ: {durationText}
                     </span>
                   </div>
 
-                  {/* Core Capacity Box */}
-                  <div className={`rounded-2xl p-4 mb-6 space-y-2.5 ${
+                  {/* Core Capacity Box with Duration Highlight */}
+                  <div className={`rounded-2xl p-4 mb-5 space-y-2.5 ${
                     isDiamond
                       ? "bg-cyan-50/80 border border-cyan-200/80 text-cyan-950"
                       : isSmall
                       ? "bg-emerald-50/80 border border-emerald-200/80 text-emerald-950"
+                      : isUltra
+                      ? "bg-purple-50/80 border border-purple-200/80 text-purple-950"
+                      : isPro
+                      ? "bg-blue-50/80 border border-blue-200/80 text-blue-950"
                       : "bg-slate-50 border border-slate-100 text-slate-800"
                   }`}>
+                    {/* Clear Duration Row in Capacity Box */}
+                    <div className="flex items-center justify-between text-xs font-black pb-2 border-b border-slate-200/60">
+                      <span className="flex items-center gap-1.5 text-slate-700">
+                        <Clock className="w-3.5 h-3.5 text-emerald-600" />
+                        প্যাকেজের মেয়াদ:
+                      </span>
+                      <span className="font-extrabold text-emerald-800 text-xs sm:text-sm bg-emerald-100/60 px-2 py-0.5 rounded">
+                        {durationText}
+                      </span>
+                    </div>
+
                     <div className="flex items-center justify-between text-xs font-black">
                       <span>মোট প্রশ্নপত্র:</span>
                       <span className={isDiamond ? "text-cyan-700 font-extrabold text-sm" : isSmall ? "text-emerald-700 font-extrabold text-sm" : "text-slate-900 font-bold"}>
@@ -373,7 +293,7 @@ export function PackagesSection({ plans = [] }: PackagesSectionProps) {
                   </div>
 
                   {/* Feature Checklist */}
-                  <div className="space-y-3 text-xs sm:text-sm text-slate-700 mb-8">
+                  <div className="space-y-2.5 text-xs sm:text-sm text-slate-700 mb-6">
                     <div className="flex items-start gap-2.5">
                       <div className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
                         <Check className="w-3 h-3 stroke-[3]" />
@@ -459,7 +379,7 @@ export function PackagesSection({ plans = [] }: PackagesSectionProps) {
                 {/* Card Action Button */}
                 <a
                   href={checkoutUrl}
-                  className={`w-full py-4 px-4 rounded-2xl text-center text-sm font-black transition-all duration-200 flex items-center justify-center gap-2 ${
+                  className={`w-full py-3.5 px-4 rounded-2xl text-center text-sm font-black transition-all duration-200 flex items-center justify-center gap-2 ${
                     isDiamond
                       ? "bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white shadow-lg shadow-cyan-600/30 active:scale-[0.98]"
                       : isSmall
@@ -477,36 +397,8 @@ export function PackagesSection({ plans = [] }: PackagesSectionProps) {
           })}
         </div>
 
-        </div>
-
-        {/* BOTTOM DOT INDICATORS & INTERACTIVE PILLS */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-4 mb-2">
-          <div className="flex items-center gap-2 bg-slate-100/80 p-1.5 rounded-full border border-slate-200 shadow-xs">
-            {planList.map((plan, idx) => {
-              const isVisible = idx >= activeIndex && idx < activeIndex + 3;
-
-              return (
-                <button
-                  key={plan.code}
-                  type="button"
-                  onClick={() => scrollToIndex(idx)}
-                  className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                    isVisible
-                      ? "bg-emerald-600 text-white shadow-xs"
-                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/60"
-                  }`}
-                  title={`${plan.name} প্যাকেজে স্ক্রোল করুন`}
-                >
-                  <span className={`h-2 w-2 rounded-full ${isVisible ? "bg-white" : "bg-slate-400"}`} />
-                  <span className="capitalize">{plan.name}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
         {/* Enhanced Payment & Security Banner */}
-        <div className="mt-12 sm:mt-16 bg-white border border-slate-200/90 rounded-2xl sm:rounded-3xl p-4 sm:p-8 lg:p-10 shadow-sm flex flex-col lg:flex-row items-center justify-between gap-6 sm:gap-8">
+        <div className="mt-12 sm:mt-16 bg-white border border-slate-200/90 rounded-2xl sm:rounded-3xl p-5 sm:p-8 lg:p-10 shadow-sm flex flex-col lg:flex-row items-center justify-between gap-6 sm:gap-8">
           <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-5 text-center sm:text-left">
             <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0 shadow-xs border border-emerald-100">
               <ShieldCheck className="w-6 h-6 sm:w-7 sm:h-7" />

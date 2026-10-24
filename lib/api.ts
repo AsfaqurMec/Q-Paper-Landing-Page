@@ -8,17 +8,33 @@ import type {
 } from "./types";
 
 export async function fetchPlans(): Promise<Plan[]> {
-  try {
-    const res = await fetch(`${BACKEND_URL}/api/plans`, {
-      next: { revalidate: 60 }
-    });
-    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-    const data = await res.json();
-    return data.data || [];
-  } catch (error) {
-    console.error("Failed to fetch plans from backend:", error);
-    return [];
+  const candidateUrls = Array.from(
+    new Set([
+      `${BACKEND_URL}/api/plans`,
+      "http://127.0.0.1:5001/api/plans",
+      "http://localhost:5001/api/plans"
+    ])
+  );
+
+  for (const url of candidateUrls) {
+    try {
+      const res = await fetch(url, {
+        next: { revalidate: 60 },
+        headers: { Accept: "application/json" }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const list = data.data || data;
+        if (Array.isArray(list) && list.length > 0) {
+          return [...list].sort((a: Plan, b: Plan) => Number(a.price || 0) - Number(b.price || 0));
+        }
+      }
+    } catch {
+      // Continue to next candidate URL
+    }
   }
+
+  return [];
 }
 
 export async function fetchCurriculumStats(): Promise<CurriculumStats | null> {
